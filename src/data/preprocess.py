@@ -8,6 +8,7 @@ Provides helpers for train/test splitting and saving processed data.
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -28,15 +29,19 @@ def build_preprocessor() -> ColumnTransformer:
     Returns
     -------
     ColumnTransformer
-        Transformer with StandardScaler for numeric features and
-        OneHotEncoder for categorical features.
+        Transformer with imputation, scaling (numeric) and
+        imputation, one-hot encoding (categorical).
     """
     numeric_transformer = Pipeline(
-        steps=[("scaler", StandardScaler())],
+        steps=[
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler()),
+        ],
     )
 
     categorical_transformer = Pipeline(
         steps=[
+            ("imputer", SimpleImputer(strategy="most_frequent")),
             (
                 "onehot",
                 OneHotEncoder(handle_unknown="infrequent_if_exist", sparse_output=False),
