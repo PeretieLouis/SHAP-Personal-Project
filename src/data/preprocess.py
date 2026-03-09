@@ -81,7 +81,11 @@ def split_data(
     X = df.drop(columns=[TARGET_COLUMN])
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state, stratify=y,
+        X,
+        y,
+        test_size=test_size,
+        random_state=random_state,
+        stratify=y,
     )
     return X_train, X_test, y_train, y_test
 
@@ -144,7 +148,9 @@ def save_processed_data(
     np.save(DATA_PROCESSED_DIR / "y_test.npy", y_test.values)
 
     pd.Series(feature_names).to_csv(
-        DATA_PROCESSED_DIR / "feature_names.csv", index=False, header=False,
+        DATA_PROCESSED_DIR / "feature_names.csv",
+        index=False,
+        header=False,
     )
     print(f"✓ Processed data saved to {DATA_PROCESSED_DIR}")
 
@@ -167,7 +173,9 @@ def run_preprocessing_pipeline(
     X_train_raw, X_test_raw, y_train, y_test = split_data(df)
     preprocessor = build_preprocessor()
     X_train, X_test, feature_names = fit_transform_data(
-        preprocessor, X_train_raw, X_test_raw,
+        preprocessor,
+        X_train_raw,
+        X_test_raw,
     )
     save_processed_data(X_train, X_test, y_train, y_test, feature_names)
 
