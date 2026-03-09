@@ -39,8 +39,7 @@ def build_preprocessor() -> ColumnTransformer:
         steps=[
             (
                 "onehot",
-                OneHotEncoder(handle_unknown="infrequent_if_exist",
-                              sparse_output=False),
+                OneHotEncoder(handle_unknown="infrequent_if_exist", sparse_output=False),
             ),
         ],
     )
