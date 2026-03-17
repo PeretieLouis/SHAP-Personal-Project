@@ -82,15 +82,16 @@ XGBOOST_PARAMS: dict = {
 # SHAP
 # ──────────────────────────────────────────────
 N_SHAP_BACKGROUND_SAMPLES = 100  # background samples for explainers
+N_SHAP_EXPLAIN_SAMPLES = 500  # test samples to explain (global importance)
 N_LOCAL_SAMPLES = 10  # test samples for local explanations
 
 # ──────────────────────────────────────────────
 # Robustness experiments
 # ──────────────────────────────────────────────
-N_PERTURBATION_RUNS = 10  # repeats per perturbation type
+N_PERTURBATION_RUNS = 3  # repeats per perturbation type
 GAUSSIAN_NOISE_STD = 0.05  # std dev for Gaussian noise (relative to feature std)
 BOOTSTRAP_SAMPLE_FRAC = 1.0  # fraction of training data per bootstrap
-TRAINING_FRACTIONS: list[float] = [1.0, 0.8, 0.6]  # dataset size variations
+TRAINING_FRACTIONS: list[float] = [1.0, 0.6]  # dataset size variations
 
 # Seeds for model random seed variation experiment
 PERTURBATION_SEEDS: list[int] = list(range(100, 100 + N_PERTURBATION_RUNS))

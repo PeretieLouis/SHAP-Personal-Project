@@ -14,7 +14,15 @@ Steps executed:
     8. Generate robustness plots
 """
 
-from src.config import METRICS_DIR, N_LOCAL_SAMPLES, NUMERIC_FEATURES
+import numpy as np
+
+from src.config import (
+    METRICS_DIR,
+    N_LOCAL_SAMPLES,
+    N_SHAP_EXPLAIN_SAMPLES,
+    NUMERIC_FEATURES,
+    RANDOM_SEED,
+)
 from src.data.load_data import load_raw_data
 from src.data.preprocess import run_preprocessing_pipeline
 from src.explainability.compute_shap import compute_baseline_shap
@@ -62,10 +70,16 @@ def main() -> None:
     print("\n" + "=" * 60)
     print("STEP 5 — Computing baseline SHAP explanations")
     print("=" * 60)
+    # Subsample test set for SHAP to keep runtime manageable
+    rng = np.random.default_rng(RANDOM_SEED)
+    shap_idx = rng.choice(X_test.shape[0], size=N_SHAP_EXPLAIN_SAMPLES, replace=False)
+    X_test_shap = X_test[shap_idx]
+    print(f"  Using {N_SHAP_EXPLAIN_SAMPLES} test samples for SHAP explanations")
+
     baseline_shap = compute_baseline_shap(
-        models, X_train, X_test, feature_names, n_local_samples=N_LOCAL_SAMPLES
+        models, X_train, X_test_shap, feature_names, n_local_samples=N_LOCAL_SAMPLES
     )
-    generate_baseline_plots(baseline_shap, X_test, feature_names)
+    generate_baseline_plots(baseline_shap, X_test_shap, feature_names)
 
     # ── Step 6: Robustness perturbations ──────────
     print("\n" + "=" * 60)
@@ -76,7 +90,7 @@ def main() -> None:
         models,
         X_train,
         y_train.values,
-        X_test,
+        X_test_shap,
         local_indices,
         feature_names,
         n_numeric_features=len(NUMERIC_FEATURES),
